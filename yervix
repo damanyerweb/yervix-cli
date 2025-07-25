@@ -133,7 +133,7 @@ PHP;
 
         echo "\n✅ Proyecto '$project' creado exitosamente.\n";
         echo "👉 cd $project\n";
-        echo "🧭 php yervix serve\n";
+        echo "🧭 yervix serve\n";
         echo "🌐 Se abrirá automáticamente: http://localhost:8000\n\n";
         break;
 
