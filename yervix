@@ -45,7 +45,13 @@ switch ($command) {
 
     case 'serve':
         echo "🚀 Iniciando servidor Yervix...\n";
-        passthru("php -S localhost:8000 index.php");
+        if (strncasecmp(PHP_OS, 'WIN', 3) === 0) {
+            exec("start \"\" http://localhost:8000");
+        }elseif (strncasecmp(PHP_OS, 'DAR', 3) === 0) {
+            exec("open http://localhost:8000");
+        } else {
+            exec("xdg-open http://localhost:8000");
+        }
         break;
 
     default:
