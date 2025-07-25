@@ -1,5 +1,9 @@
 # 🛠️ Yervix Installer
 
+![version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![license](https://img.shields.io/badge/license-MIT-green.svg)
+![composer](https://img.shields.io/badge/composer-ready-orange.svg)
+
 Instalador CLI para el framework **Yervix**, enfocado en simplicidad, seguridad, modularidad y experiencia del desarrollador. Permite crear proyectos nuevos, levantar un servidor local en segundos y prepararlos para su despliegue.
 
 ## 🧰 Requisitos previos
