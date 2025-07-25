@@ -43,15 +43,19 @@ switch ($command) {
         yervix_install_project($arg);
         break;
 
-    case 'serve':
+        case 'serve':
         echo "🚀 Iniciando servidor Yervix...\n";
+        echo "📦 Ejecutando: php -S localhost:8000 index.php\n";
+
+        // ✅ Abrir navegador directamente con la ruta final
         if (strncasecmp(PHP_OS, 'WIN', 3) === 0) {
-            exec("start \"\" http://localhost:8000");
-        }elseif (strncasecmp(PHP_OS, 'DAR', 3) === 0) {
-            exec("open http://localhost:8000");
+            pclose(popen("start http://localhost:8000", "r"));
         } else {
-            exec("xdg-open http://localhost:8000");
+            shell_exec("xdg-open http://localhost:8000");
         }
+
+        // 🧠 Ejecutar servidor en primer plano
+        passthru("php -S localhost:8000 index.php");
         break;
 
     default:

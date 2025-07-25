@@ -1,5 +1,4 @@
 <?php
-
 function yervix_install_project(string $projectName): void {
   // 🔒 Validar nombre
   if (empty($projectName)) {
