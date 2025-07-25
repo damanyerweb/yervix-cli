@@ -1,0 +1,29 @@
+#!/usr/bin/env php
+<?php
+
+$command = $argv[1] ?? null;
+$arg = $argv[2] ?? null;
+
+switch ($command) {
+  case 'new':
+    if (!$arg) {
+      echo "❌ Debes indicar el nombre del proyecto.\n";
+      echo "ℹ️ Uso: php yervix new nombre-del-proyecto\n";
+      exit;
+    }
+
+    require __DIR__ . '/cli/installer.php';
+    yervix_install_project($arg);
+    break;
+
+  case 'serve':
+    echo "🚀 Iniciando servidor Yervix...\n";
+    passthru("php -S localhost:8000 index.php");
+    break;
+
+  default:
+    echo "🧭 Comandos disponibles:\n";
+    echo "   new     → Instala el framework Yervix\n";
+    echo "   serve   → Levanta el servidor local\n";
+    break;
+}

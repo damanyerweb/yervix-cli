@@ -1,0 +1,16 @@
+{
+  "name": "yervix/installer",
+  "description": "Instalador CLI para el framework Yervix",
+  "type": "project",
+  "license": "MIT",
+  "bin": ["yervix"],
+  "authors": [
+    {
+      "name": "Yerson Lora Guilarte",
+      "email": "yersonlguilarte@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.4"
+  }
+}
