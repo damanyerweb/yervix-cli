@@ -1,5 +1,19 @@
 #!/usr/bin/env php
 <?php
+if (!is_callable('exec')) {
+    echo "❌ El sistema no permite ejecución de comandos.";
+    exit(1);
+}
+
+$path = getenv('PATH');
+$bin = realpath(__DIR__ . '/yervix');
+
+if (!strpos($path, dirname($bin))) {
+    echo "⚠️ El comando `yervix` no está en tu PATH.";
+    echo "\nPuedes agregarlo ejecutando:\n";
+    echo "export PATH=\"".dirname($bin).":\$PATH\"\n";
+    // Opcional: ofrecer agregarlo automáticamente si es seguro
+}
 
 $command = $argv[1] ?? null;
 $arg = $argv[2] ?? null;
