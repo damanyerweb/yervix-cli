@@ -1,15 +1,14 @@
 <?php
 
-function yervix_install_project(string $projectName): void
-{
-  // 🔍 Validar nombre
+function yervix_install_project(string $projectName): void {
+  // 🔒 Validar nombre
   if (empty($projectName)) {
     echo "⚠️ Debes ingresar un nombre válido.\n";
-    exit;
+    exit(1);
   }
   if (is_dir($projectName)) {
     echo "⚠️ Ya existe una carpeta con ese nombre.\n";
-    exit;
+    exit(1);
   }
 
   // 🎨 Selector de plantilla
@@ -32,16 +31,12 @@ function yervix_install_project(string $projectName): void
     "$projectName/core-engine",
     "$projectName/core-engine/builder",
     "$projectName/core-engine/modules",
-    "$projectName/core-engine/templates",
-    "$projectName/core-engine/templates/bootstrap",
-    "$projectName/core-engine/templates/bulma",
-    "$projectName/core-engine/templates/flowbite",
+    "$projectName/core-engine/templates/$selectedTemplate",
     "$projectName/core-engine/db",
     "$projectName/core-engine/deploy",
     "$projectName/controllers",
     "$projectName/models",
     "$projectName/views",
-    "$projectName/public",
     "$projectName/public/assets",
   ];
 
@@ -68,59 +63,32 @@ CONFIG;
   file_put_contents("$projectName/core-engine/config.php", $config);
   echo "🧠 Configuración generada.\n";
 
-  // 🖼️ Vista inicial
-  $homeContent = match ($selectedTemplate) {
-    'bootstrap' => <<<HTML
+  // 🖼️ Vista inicial personalizada
+  $headline = "Bienvenido a Yervix con " . ucfirst($selectedTemplate);
+  $homeContent = <<<HTML
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Yervix | Bootstrap</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <title>Yervix | $selectedTemplate</title>
+  <!-- Estilos según plantilla -->
+  %STYLES%
 </head>
-<body>
-  <div class="container mt-5">
-    <h1 class="text-primary">Bienvenido a Yervix con Bootstrap</h1>
-  </div>
+<body class="bg-light py-5 text-center">
+  <h1 style="color:#007bff;">$headline</h1>
 </body>
 </html>
-HTML,
+HTML;
 
-    'bulma' => <<<HTML
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Yervix | Bulma</title>
-  <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" rel="stylesheet">
-</head>
-<body>
-  <section class="section">
-    <div class="container">
-      <h1 class="title has-text-primary">Bienvenido a Yervix con Bulma</h1>
-    </div>
-  </section>
-</body>
-</html>
-HTML,
-
-    default => <<<HTML
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Yervix | Flowbite</title>
+  // 🔗 Inyectar estilos dinámicos
+  $styles = match ($selectedTemplate) {
+    'bootstrap' => '<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">',
+    'bulma' => '<link href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" rel="stylesheet">',
+    default => '
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-50 py-10">
-  <div class="text-center">
-    <h1 class="text-4xl font-bold text-blue-600 mb-4">Bienvenido a Yervix con Flowbite</h1>
-  </div>
-</body>
-</html>
-HTML
+  <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet">'
   };
+  $homeContent = str_replace('%STYLES%', $styles, $homeContent);
 
   file_put_contents("$projectName/core-engine/templates/$selectedTemplate/home.php", $homeContent);
   echo "🎨 Vista base generada en $selectedTemplate.\n";
@@ -142,9 +110,12 @@ PHP;
   file_put_contents("$projectName/index.php", $indexContent);
   echo "📄 Archivo index.php listo.\n";
 
+  // 🚀 Mensaje final estilo CLI moderno
   echo "\n✅ Proyecto '$projectName' creado exitosamente con plantilla '$selectedTemplate'.\n";
-  echo "👉 Entra al proyecto:\n   cd $projectName\n";
-  echo "🚀 Levántalo:\n   php yervix serve\n";
+  echo "👉 Pasos siguientes:\n";
+  echo "   cd $projectName\n";
+  echo "   php yervix serve\n";
   echo "🌐 Accede en: http://localhost:8000\n\n";
 }
+
 

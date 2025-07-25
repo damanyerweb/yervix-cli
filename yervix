@@ -1,43 +1,56 @@
 #!/usr/bin/env php
 <?php
+
 if (!is_callable('exec')) {
-    echo "❌ El sistema no permite ejecución de comandos.";
+    echo "❌ El sistema no permite ejecución de comandos.\n";
     exit(1);
 }
 
-$path = getenv('PATH');
-$bin = realpath(__DIR__ . '/yervix');
+// ✅ Función robusta para verificar PATH
+function yervix_path_check(): void {
+    $realBinDir = realpath(__DIR__); // Ruta donde está este script
+    $systemPath = getenv('PATH');
 
-if (!strpos($path, dirname($bin))) {
-    echo "⚠️ El comando `yervix` no está en tu PATH.";
-    echo "\nPuedes agregarlo ejecutando:\n";
-    echo "export PATH=\"".dirname($bin).":\$PATH\"\n";
-    // Opcional: ofrecer agregarlo automáticamente si es seguro
+    // Mostrar advertencia solo si el directorio no está en PATH
+    if (!str_contains($systemPath, $realBinDir)) {
+        if (strncasecmp(PHP_OS, 'WIN', 3) === 0) {
+            echo "⚠️ El comando `yervix` podría no estar en tu PATH.\n";
+            echo "ℹ️ Agrega esta ruta al PATH de tu sistema:\n";
+            echo "   $realBinDir\n";
+        } else {
+            echo "⚠️ El comando `yervix` podría no estar en tu PATH.\n";
+            echo "👉 Puedes agregarlo ejecutando:\n";
+            echo "   export PATH=\"$realBinDir:\$PATH\"\n";
+        }
+    }
 }
 
+// 🧪 Ejecuta el chequeo al inicio
+yervix_path_check();
+
+// 🧭 Lógica del CLI
 $command = $argv[1] ?? null;
 $arg = $argv[2] ?? null;
 
 switch ($command) {
-  case 'new':
-    if (!$arg) {
-      echo "❌ Debes indicar el nombre del proyecto.\n";
-      echo "ℹ️ Uso: php yervix new nombre-del-proyecto\n";
-      exit;
-    }
+    case 'new':
+        if (!$arg) {
+            echo "❌ Debes indicar el nombre del proyecto.\n";
+            echo "ℹ️ Uso: yervix new nombre-del-proyecto\n";
+            exit(1);
+        }
+        require __DIR__ . '/cli/installer.php';
+        yervix_install_project($arg);
+        break;
 
-    require __DIR__ . '/cli/installer.php';
-    yervix_install_project($arg);
-    break;
+    case 'serve':
+        echo "🚀 Iniciando servidor Yervix...\n";
+        passthru("php -S localhost:8000 index.php");
+        break;
 
-  case 'serve':
-    echo "🚀 Iniciando servidor Yervix...\n";
-    passthru("php -S localhost:8000 index.php");
-    break;
-
-  default:
-    echo "🧭 Comandos disponibles:\n";
-    echo "   new     → Instala el framework Yervix\n";
-    echo "   serve   → Levanta el servidor local\n";
-    break;
+    default:
+        echo "🧭 Comandos disponibles:\n";
+        echo "   new     → Instala el framework Yervix\n";
+        echo "   serve   → Levanta el servidor local\n";
+        break;
 }
