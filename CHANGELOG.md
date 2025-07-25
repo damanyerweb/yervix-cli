@@ -1,13 +1,18 @@
-# 📦 Changelog - Yervix Installer
+## [v1.3.0] - 2025-07-25
 
-## v1.0.0 — Primera versión estable
+### 🚀 Nuevo flujo integrado en binario
+- Se elimina `installer.php` y la carpeta `cli`
+- El binario `yervix` incluye:
+  - Comando `new`: Crea proyecto Yervix con estructura completa, plantilla visual, configuración y vista inicial
+  - Comando `serve`: Inicia servidor local y abre navegador automáticamente (Windows/macOS/Linux)
 
-🔹 Instalador CLI funcional para proyectos Yervix  
-🔹 Comando `yervix new nombre-del-proyecto` con selector visual (Bootstrap, Bulma, Flowbite)  
-🔹 Comando `yervix serve` para iniciar servidor local en puerto 8000  
-🔹 Estructura modular con carpetas dedicadas a configuración, templates, assets y vistas  
-🔹 Generación automática de configuración (`config.php`) y vista inicial  
-🔹 Compatible con Composer global (distribución multiplataforma)  
-🔹 Preparado para futuras extensiones (flags, templates, branding)
+### 🎨 Plantillas soportadas
+- Tailwind (por defecto)
+- Bootstrap
+- Bulma
+- Flowbite
 
-Esta versión inaugura la experiencia Yervix centrada en claridad, modularidad y flujo ágil para desarrolladores PHP.
+### ✅ Mejoras
+- Flujo más directo, sin modularizaciones innecesarias
+- Apertura automática del navegador respetando sistema operativo
+- Validación de PATH en sistemas que lo requieran

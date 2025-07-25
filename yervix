@@ -6,29 +6,18 @@ if (!is_callable('exec')) {
     exit(1);
 }
 
-// ✅ Función robusta para verificar PATH
+// 🔍 Comprobación de PATH
 function yervix_path_check(): void {
-    $realBinDir = realpath(__DIR__); // Ruta donde está este script
+    $realBinDir = realpath(__DIR__);
     $systemPath = getenv('PATH');
-
-    // Mostrar advertencia solo si el directorio no está en PATH
     if (!str_contains($systemPath, $realBinDir)) {
-        if (strncasecmp(PHP_OS, 'WIN', 3) === 0) {
-            echo "⚠️ El comando `yervix` podría no estar en tu PATH.\n";
-            echo "ℹ️ Agrega esta ruta al PATH de tu sistema:\n";
-            echo "   $realBinDir\n";
-        } else {
-            echo "⚠️ El comando `yervix` podría no estar en tu PATH.\n";
-            echo "👉 Puedes agregarlo ejecutando:\n";
-            echo "   export PATH=\"$realBinDir:\$PATH\"\n";
-        }
+        echo "⚠️ El comando `yervix` podría no estar en tu PATH.\n";
+        echo "ℹ️ Agrega esta ruta al PATH:\n   $realBinDir\n";
     }
 }
 
-// 🧪 Ejecuta el chequeo al inicio
 yervix_path_check();
 
-// 🧭 Lógica del CLI
 $command = $argv[1] ?? null;
 $arg = $argv[2] ?? null;
 
@@ -39,28 +28,135 @@ switch ($command) {
             echo "ℹ️ Uso: yervix new nombre-del-proyecto\n";
             exit(1);
         }
-        require __DIR__ . '/cli/installer.php';
-        yervix_install_project($arg);
+
+        $project = $arg;
+        if (is_dir($project)) {
+            echo "⚠️ Ya existe una carpeta con ese nombre.\n";
+            exit(1);
+        }
+
+        echo "\n🎨 Elige la plantilla visual para este proyecto:\n";
+        echo "  [1] Tailwind\n";
+        echo "  [2] Bootstrap\n";
+        echo "  [3] Bulma\n";
+        echo "  [4] Flowbite\n";
+        $input = readline("👉 Escribe el número y presiona ENTER: ");
+
+        $selectedTemplate = match (trim($input)) {
+            '2' => 'bootstrap',
+            '3' => 'bulma',
+            '4' => 'flowbite',
+            default => 'tailwind',
+        };
+
+        echo "\n🧩 Has seleccionado: $selectedTemplate\n";
+        echo "🛠️ Creando proyecto Yervix: $project...\n";
+
+        $folders = [
+            "$project",
+            "$project/core-engine",
+            "$project/core-engine/builder",
+            "$project/core-engine/modules",
+            "$project/core-engine/templates",
+            "$project/core-engine/templates/$selectedTemplate",
+            "$project/core-engine/db",
+            "$project/core-engine/deploy",
+            "$project/controllers",
+            "$project/models",
+            "$project/views",
+            "$project/public",
+            "$project/public/assets",
+        ];
+
+        foreach ($folders as $folder) {
+            mkdir($folder, 0755, true);
+        }
+
+        echo "✅ Carpetas creadas.\n";
+
+        $config = <<<CONFIG
+<?php
+return [
+  "template" => "$selectedTemplate",
+  "database" => [
+    "host" => "localhost",
+    "name" => "yervix_db",
+    "user" => "root",
+    "pass" => ""
+  ]
+];
+CONFIG;
+
+        file_put_contents("$project/core-engine/config.php", $config);
+        echo "🧠 Configuración generada.\n";
+
+        $headline = "Bienvenido a Yervix con " . ucfirst($selectedTemplate);
+        $styles = match ($selectedTemplate) {
+            'bootstrap' => '<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">',
+            'bulma' => '<link href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" rel="stylesheet">',
+            'flowbite' => '<script src="https://cdn.tailwindcss.com"></script><link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet">',
+            default => '<script src="https://cdn.tailwindcss.com"></script>',
+        };
+
+        $homeContent = <<<HTML
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Yervix | $selectedTemplate</title>
+  $styles
+</head>
+<body class="bg-light py-5 text-center">
+  <h1 style="color:#007bff;">$headline</h1>
+</body>
+</html>
+HTML;
+
+        file_put_contents("$project/core-engine/templates/$selectedTemplate/home.php", $homeContent);
+        echo "🎨 Vista base generada.\n";
+
+        $indexContent = <<<PHP
+<?php
+\$config = require __DIR__ . '/core-engine/config.php';
+\$template = \$config['template'] ?? '$selectedTemplate';
+\$viewPath = __DIR__ . "/core-engine/templates/\$template/home.php";
+
+if (file_exists(\$viewPath)) {
+  include \$viewPath;
+} else {
+  echo "<h1 style='color:red;'>Vista '\$template/home.php' no encontrada</h1>";
+}
+PHP;
+
+        file_put_contents("$project/index.php", $indexContent);
+        echo "📄 Archivo index.php listo.\n";
+
+        echo "\n✅ Proyecto '$project' creado exitosamente.\n";
+        echo "👉 cd $project\n";
+        echo "🧭 php yervix serve\n";
+        echo "🌐 Se abrirá automáticamente: http://localhost:8000\n\n";
         break;
 
-        case 'serve':
+    case 'serve':
         echo "🚀 Iniciando servidor Yervix...\n";
+        $config = require __DIR__ . '/core-engine/config.php';
+        $template = $config['template'] ?? 'tailwind';
+
+        echo "🎨 Plantilla activa: $template\n";
         echo "📦 Ejecutando: php -S localhost:8000 index.php\n";
 
-        // ✅ Abrir navegador directamente con la ruta final
         if (strncasecmp(PHP_OS, 'WIN', 3) === 0) {
             pclose(popen("start http://localhost:8000", "r"));
         } else {
             shell_exec("xdg-open http://localhost:8000");
         }
 
-        // 🧠 Ejecutar servidor en primer plano
         passthru("php -S localhost:8000 index.php");
         break;
 
     default:
         echo "🧭 Comandos disponibles:\n";
-        echo "   new     → Instala el framework Yervix\n";
-        echo "   serve   → Levanta el servidor local\n";
+        echo "   new <nombre> → Crear nuevo proyecto\n";
+        echo "   serve        → Levanta servidor en localhost:8000\n";
         break;
 }
