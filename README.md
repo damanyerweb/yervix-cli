@@ -1,6 +1,6 @@
 # 🛠️ Yervix Installer
 
-![version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![version](https://img.shields.io/badge/version-1.1.1-blue.svg)
 ![license](https://img.shields.io/badge/license-MIT-green.svg)
 ![composer](https://img.shields.io/badge/composer-ready-orange.svg)
 
