@@ -125,7 +125,7 @@ HTML;
 
         $indexContent = <<<PHP
 <?php
-\$config = require __DIR__ . '/core-engine/config.php';
+\$config = require getcwd() . '/core-engine/config.php';
 \$template = \$config['template'] ?? '$selectedTemplate';
 \$viewPath = __DIR__ . "/core-engine/templates/\$template/home.php";
 
@@ -147,7 +147,7 @@ PHP;
 
     case 'serve':
         echo "🚀 Iniciando servidor Yervix...\n";
-        $config = require __DIR__ . '/core-engine/config.php';
+        $config = require getcwd() . '/core-engine/config.php';
         $template = $config['template'] ?? 'tailwind';
 
         echo "🎨 Plantilla activa: $template\n";
@@ -166,7 +166,7 @@ PHP;
         if ($arg === 'dev') {
             echo "🚀 Yervix en modo desarrollo (hot reload)...\n";
 
-            $config = require __DIR__ . '/core-engine/config.php';
+            $config = require getcwd() . '/core-engine/config.php';
             $template = $config['template'] ?? 'tailwind';
             $homePath = __DIR__ . "/core-engine/templates/$template/home.php";
 
