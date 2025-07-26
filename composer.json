@@ -3,7 +3,7 @@
   "description": "Instalador CLI para el framework Yervix",
   "type": "project",
   "license": "MIT",
-  "bin": ["yervix"],
+  "bin": ["bin/yervix"],
   "authors": [
     {
       "name": "Yerson Lora Guilarte",
