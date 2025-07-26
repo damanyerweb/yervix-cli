@@ -108,6 +108,14 @@ CONFIG;
 </head>
 <body class="bg-light py-5 text-center">
   <h1 style="color:#007bff;">$headline</h1>
+  <script>
+const evtSource = new EventSource("/watcher.php");
+evtSource.onmessage = function(event) {
+    if (event.data === "reload") {
+        location.reload();
+    }
+};
+</script>
 </body>
 </html>
 HTML;
@@ -153,6 +161,52 @@ PHP;
 
         passthru("php -S localhost:8000 index.php");
         break;
+
+            case 'run':
+        if ($arg === 'dev') {
+            echo "🚀 Yervix en modo desarrollo (hot reload)...\n";
+
+            $config = require __DIR__ . '/core-engine/config.php';
+            $template = $config['template'] ?? 'tailwind';
+            $homePath = __DIR__ . "/core-engine/templates/$template/home.php";
+
+            $watcherCode = <<<PHP
+<?php
+\$homeFile = "$homePath";
+\$lastMod = filemtime(\$homeFile);
+
+header('Content-Type: text/event-stream');
+header('Cache-Control: no-cache');
+
+while (true) {
+    clearstatcache();
+    \$currentMod = filemtime(\$homeFile);
+    if (\$currentMod > \$lastMod) {
+        echo "data: reload\\n\\n";
+        ob_flush();
+        flush();
+        \$lastMod = \$currentMod;
+    }
+    sleep(1);
+}
+PHP;
+
+            file_put_contents(__DIR__ . '/watcher.php', $watcherCode);
+
+            // Abrir navegador automáticamente
+            if (strncasecmp(PHP_OS, 'WIN', 3) === 0) {
+                pclose(popen("start http://localhost:8000", "r"));
+            } else {
+                shell_exec("xdg-open http://localhost:8000");
+            }
+
+            // Levanta server y watcher en segundo plano
+            shell_exec("php -S localhost:8000 index.php > /dev/null 2>&1 &");
+            shell_exec("php watcher.php > /dev/null 2>&1 &");
+            exit(0);
+        }
+        break;
+
 
     default:
         echo "🧭 Comandos disponibles:\n";
