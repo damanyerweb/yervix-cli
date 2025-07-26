@@ -22,14 +22,14 @@ Instala el comando `yervix` globalmente usando Composer:
 composer global require yervix/installer
 yervix new nombre-del-proyecto   # Crea una nueva instalación de Yervix
 cd mi-sitio
-php yervix serve    # Inicia servidor PHP local en puerto 8000
+yervix serve    # Inicia servidor PHP local en puerto 8000
 ```
 ## OBSERVACIÓN PARA USERS Linux/macOS!!
 ```bash
 composer global require yervix/installer
 php ~/.composer/vendor/bin/yervix new nombre-del-proyecto
 cd mi-sitio
-php yervix serve
+yervix serve
 ```
 
 ### Tu sitio estará disponible en: ➡️ http://localhost:8000
