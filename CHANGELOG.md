@@ -1,4 +1,4 @@
-## [v1.3.0] - 2025-07-25
+## [v1.1.1] - 2025-07-25
 
 ### 🚀 Nuevo flujo integrado en binario
 - Se elimina `installer.php` y la carpeta `cli`
