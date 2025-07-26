@@ -11,6 +11,7 @@
     }
   ],
   "require": {
-    "php": ">=7.4"
+    "php": ">=7.4",
+    "yervix/installer": "^1.1"
   }
 }
