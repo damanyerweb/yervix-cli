@@ -162,7 +162,7 @@ PHP;
         passthru("php -S localhost:8000 index.php");
         break;
 
-            case 'run':
+        case 'run':
         if ($arg === 'dev') {
             echo "🚀 Yervix en modo desarrollo (hot reload)...\n";
 
@@ -170,7 +170,8 @@ PHP;
             $template = $config['template'] ?? 'tailwind';
             $homePath = __DIR__ . "/core-engine/templates/$template/home.php";
 
-            $watcherCode = <<<PHP
+            // Crea watcher.php si no existe
+            $watcherCode =<<<PHP
 <?php
 \$homeFile = "$homePath";
 \$lastMod = filemtime(\$homeFile);
@@ -190,7 +191,6 @@ while (true) {
     sleep(1);
 }
 PHP;
-
             file_put_contents(__DIR__ . '/watcher.php', $watcherCode);
 
             // Abrir navegador automáticamente
@@ -201,12 +201,11 @@ PHP;
             }
 
             // Levanta server y watcher en segundo plano
-            shell_exec("php -S localhost:8000 index.php > /dev/null 2>&1 &");
-            shell_exec("php watcher.php > /dev/null 2>&1 &");
+            shell_exec("php -S localhost:8000 index.php > nul 2>&1 &");
+            shell_exec("php watcher.php > nul 2>&1 &");
             exit(0);
         }
         break;
-
 
     default:
         echo "🧭 Comandos disponibles:\n";
