@@ -36,17 +36,15 @@ switch ($command) {
         }
 
         echo "\n🎨 Elige la plantilla visual para este proyecto:\n";
-        echo "  [1] Tailwind\n";
+        echo "  [1] Flowbite (usa Tailwind internamente)\n";
         echo "  [2] Bootstrap\n";
         echo "  [3] Bulma\n";
-        echo "  [4] Flowbite\n";
         $input = readline("👉 Escribe el número y presiona ENTER: ");
 
         $selectedTemplate = match (trim($input)) {
             '2' => 'bootstrap',
             '3' => 'bulma',
-            '4' => 'flowbite',
-            default => 'tailwind',
+            default => 'flowbite',
         };
 
         echo "\n🧩 Has seleccionado: $selectedTemplate\n";
@@ -94,8 +92,7 @@ CONFIG;
         $styles = match ($selectedTemplate) {
             'bootstrap' => '<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">',
             'bulma' => '<link href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" rel="stylesheet">',
-            'flowbite' => '<script src="https://cdn.tailwindcss.com"></script><link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet">',
-            default => '<script src="https://cdn.tailwindcss.com"></script>',
+            default => '<script src="https://cdn.tailwindcss.com"></script><link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet">',
         };
 
         $homeContent = <<<HTML
