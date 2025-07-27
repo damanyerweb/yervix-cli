@@ -195,7 +195,7 @@ while (true) {
     sleep(1);
 }
 PHP;
-            file_put_contents(__DIR__ . '/watcher.php', $watcherCode);
+            file_put_contents(getcwd() . '/watcher.php', $watcherCode);
 
             // Abrir navegador automáticamente
             if (strncasecmp(PHP_OS, 'WIN', 3) === 0) {
