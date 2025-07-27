@@ -172,7 +172,7 @@ PHP;
 
             $config = require getcwd() . '/core-engine/config.php';
             $template = $config['template'] ?? 'tailwind';
-            $homePath = __DIR__ . "/core-engine/templates/$template/home.php";
+            $homePath = getcwd() . "/core-engine/templates/$template/home.php";
 
             // Crea watcher.php si no existe
             $watcherCode =<<<PHP
